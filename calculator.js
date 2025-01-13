@@ -118,7 +118,14 @@ function equalsClick(event) {
         resetFontSize();
     }
 
-    // Když buffer obsahuje =
+    if (output.innerHTML === "0" && suboutput.innerHTML[suboutput.innerHTML.length - 1] === "/") {
+        output.innerHTML = "Nelze dělit nulou!";
+        suboutput.innerHTML = "";
+        buffer.length = 0;
+        flag++;
+        return;
+    }
+
     if (bufferLastElement === "=" && (output.innerHTML.includes("^2") || output.innerHTML.includes("sqrt"))) { 
         buffer.length = 0;
         buffer.push(cleanedOutput, button.innerHTML); 
