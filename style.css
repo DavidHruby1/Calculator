@@ -1,0 +1,140 @@
+/* font import */
+@import url('https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400;700&family=Oxanium:wght@200..800&family=Quicksand:wght@300..700&family=Roboto+Condensed:wght@500&family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
+
+:root {
+    --bg: black;
+    --calc_bg: #9d9b9b;
+    --numbers_primary: #006161;
+    --numbers_secondary: #004a4a;
+    --operators_primary: rgb(172, 119, 22);
+    --operators_secondary: rgb(110, 71, 0);
+    --logics_primary: rgb(110, 110, 110);
+    --logics_secondary: rgb(75, 75, 75);
+    --display_color: white;
+    --display_font_color: black;
+    --display_font_size: 36px;
+    --subdisplay_font_color: rgb(113, 113, 113);
+    --subdisplay_font_size: 22px;
+    --buttons_font_color: white;
+    --butons_font_size: 28px; /* Maybe more */
+    --container_radius: 8px;
+    --click_border_color: white;
+}
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: 'Roboto Flex', sans-serif;
+}
+body {
+    height: 100vh;
+}
+.body-bg {
+    height: 100%;
+    width: 100%;
+    background-color: var(--bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container-bg {
+    background-color: var(--calc_bg);
+    display: grid;
+    grid-template-columns: repeat(5, 80px);
+    grid-template-rows: repeat(7, 80px);
+    cursor: default;
+}
+.container-size {
+    height: 560px;
+    width: 400px;
+    border-radius: var(--container_radius);
+}
+.output {
+    grid-column: 1 / 6;
+    grid-row: 1 / 3;
+    margin-top: 32px;
+    margin-bottom: 32px;
+    background-color: var(--display_color);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 8px; /* možná předělat na relativní -> % */
+    font-size: var(--display_font_size);
+    color: var(--display_font_color);
+}
+.suboutput {
+    grid-column: 1 / 6;
+    grid-row: 1 / 2;
+    margin-top: 30px;
+    background-color: transparent;
+    display: flex;
+    height: 28px;
+    justify-content: flex-end;
+    padding-right: 8px; /* též možná předělat na relativní */
+    color: var(--subdisplay_font_color);
+    font-size: var(--subdisplay_font_size);
+    white-space: nowrap;
+    overflow: hidden;
+}
+.buttons {
+    grid-column: 1 / 6;
+    grid-row: 3 / 8;
+}
+.btn {
+    margin-right: -4px;
+    outline: none;
+    border: none;
+    height: 80px;
+    width: 80px;
+    font-size: var(--butons_font_size);
+    color: var(--buttons_font_color);
+    transition: 
+        background-color 100ms ease,
+        border-color 100ms ease;
+}
+.operator,
+.spec,
+.eq {
+    background-color: var(--operators_primary);
+    border: 2px solid var(--operators_secondary);
+}
+.number {
+    background-color: var(--numbers_primary);
+    border: 2px solid var(--numbers_secondary);
+}
+.logic {
+    background-color: var(--logics_primary);
+    border: 2px solid var(--logics_secondary);
+}
+.edge-left {
+    border-bottom-left-radius: var(--container_radius);
+}
+.edge-right {
+    border-bottom-right-radius: var(--container_radius);
+}
+
+/* Button hovers */
+.number:hover {
+    background-color: var(--numbers_secondary);
+}
+.operator:hover,
+.spec:hover,
+.eq:hover {
+    background-color: var(--operators_secondary);
+}
+.logic:hover {
+    background-color: var(--logics_secondary);
+}
+
+/* Button clicks */
+.number:active {
+    border-color: var(--click_border_color);
+}
+.operator:active,
+.spec:active {
+    border-color: var(--click_border_color);
+}
+.logic:active {
+    border-color: var(--click_border_color);
+}

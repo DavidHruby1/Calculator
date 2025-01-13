@@ -1,0 +1,50 @@
+<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.js"></script>
+</head>
+<body>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <div id="pageBody" class="body-bg" name="pageBody">
+        <div id="container" class="container-bg container-size" name="container">
+            <div id="buttonContainer" class="buttons">
+                <button id="buttonMRC" class="btn logic">MC</button>
+                <button id="buttonMm" class="btn logic">MRC</button>
+                <button id="buttonMp" class="btn logic">MS</button>
+                <button id="buttonC" class="btn logic">C</button>
+                <button id="buttonCE" class="btn logic">CE</button>
+                <button id="buttonSqrt" class="btn spec">√</button>
+                <button id="button7" class="btn number">7</button>
+                <button id="button8" class="btn number">8</button>
+                <button id="button9" class="btn number">9</button>
+                <button id="buttonDiv" class="btn operator">/</button>
+                <button id="buttonExp" class="btn spec">x²</button>
+                <button id="button4" class="btn number">4</button>
+                <button id="button5" class="btn number">5</button>
+                <button id="button6" class="btn number">6</button>
+                <button id="buttonX" class="btn operator">*</button>
+                <button id="buttonPer" class="btn spec">e</button>
+                <button id="button1" class="btn number">1</button>
+                <button id="button2" class="btn number">2</button>
+                <button id="button3" class="btn number">3</button>
+                <button id="buttonMinus" class="btn operator">-</button>
+                <button id="buttonPi" class="btn edge-left spec">π</button>
+                <button id="buttonDot" class="btn number decimal">.</button>
+                <button id="button0" class="btn number">0</button>
+                <button id="buttonEq" class="btn eq">=</button>
+                <button id="buttonPlus" class="btn operator edge-right">+</button>
+            </div>
+            <div id="outputContainer" class="output">0</div>
+            <div id="outputSubContainer" class="suboutput"></div>
+        </div>
+    </div>
+
+    <script src="calculator.js"></script>
+
+</body>
+</html>
