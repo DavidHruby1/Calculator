@@ -1,4 +1,3 @@
-
 //
 // Variables
 //
@@ -37,11 +36,11 @@ function numClick(event) {
     // Kontrola flagu - pokud je zobrazen výsledek a začnu psát čísla, tak ho přepíšou
     if (flag > 0) {
         if (isDecimal) {
-            if (isSuboutputEmpty) resetCalculator();
+            if (!isSuboutputEmpty) resetCalculator();
             output.innerHTML = "0.";
         } 
         else {
-            if (isSuboutputEmpty) resetCalculator();
+            if (!isSuboutputEmpty) resetCalculator();
             addNumberToOutput(button, outputEmpty = true);
         }
         flag = 0;
