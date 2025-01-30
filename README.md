@@ -22,7 +22,9 @@ Tato webová aplikace umožňuje uživatelům jednoduché matematické operace
 - HTML, CSS, JavaScript
 
 ## Použití
-- Jednoduše stáhněte repozitář a otevřete index.html v prohlížeči
+- Naklonujte repozitář a spusťte index.html v prohlížeči
+  ```bash
+  git clone https://github.com/uzivatel/Calculator.git
 
 ## Poznámky
 - Kalkulačka zatím neumožňuje zadávat čísla z klávesnice
