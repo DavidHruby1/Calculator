@@ -31,7 +31,6 @@ function numClick(event) {
     const isSuboutputEmpty = suboutput.innerHTML === "";
 
     if (output.innerHTML.length >= OUTPUT_MAX_LENGTH) return;
-    console.log(flag);
 
     // Kontrola flagu - pokud je zobrazen výsledek a začnu psát čísla, tak ho přepíšou
     if (flag > 0) {
@@ -94,13 +93,14 @@ function addNumberToOutput(pressedButton, outputEmpty = false) {
 // + - * /
 function basicOperatorClick(event) {
     const button = event.currentTarget;
-    const cleanedOutput = output.innerHTML.replace(/\s+/g, "");
     const bufferLastElement = buffer.length > 0 && buffer[buffer.length - 1]; // Pokud buffer není prázdný, tak mu přiřaď hodnotu, jinak false
+    let cleanedOutput = output.innerHTML.replace(/\s+/g, "");
     flag = 0; // Flag nastavuji na 0, aby se po zmáčknutí "=" a následného použití operátoru nevymazaly všechny buffery
 
     const isOperatorLastElement = bufferLastElement && bufferLastElement.includes("="); // Když proměnná bLE je true, zkontroluj druhou podmínku
     const isOutputEmpty = output.innerHTML === "";
     const isOutputDecimal = output.innerHTML.includes(".");
+    const isOutputExpRoot = output.innerHTML.includes("sqrt") || output.innerHTML.includes("^2");
 
     if (currentFontSize < 36) resetFontSize();
 
@@ -109,6 +109,7 @@ function basicOperatorClick(event) {
         suboutput.innerHTML = suboutput.innerHTML.slice(0, -1) + button.innerHTML;
     } 
     else if (!isOutputEmpty && isOperatorLastElement) {
+        cleanedOutput = !cleanedOutput.includes(".") ? parseInt(cleanedOutput) : parseFloat(cleanedOutput);
         buffer = [cleanedOutput, button.innerHTML];
         suboutput.innerHTML = cleanedOutput + button.innerHTML;
         output.innerHTML = "";
@@ -117,16 +118,17 @@ function basicOperatorClick(event) {
         if (isOutputDecimal) {
             buffer.push(parseFloat(cleanedOutput), button.innerHTML);
         } 
-        else if (!isOutputDecimal) {
+        else if (!isOutputDecimal && !isOutputExpRoot) {
             buffer.push(parseInt(cleanedOutput), button.innerHTML);
         }
-        else { 
+        else { // Output obsahuje ExpRoot 
             buffer.push(cleanedOutput, button.innerHTML);
         }
 
         suboutput.innerHTML += cleanedOutput + button.innerHTML; 
         output.innerHTML = "";
     }
+    console.log(buffer);
 }
 
 function switchOperator(button, bufferLastElement) {
@@ -142,29 +144,26 @@ function equalsClick(event) {
     const suboutputLastElement = suboutput.innerHTML[suboutput.innerHTML.length - 1];
     let cleanedOutput = output.innerHTML.replace(/\s+/g, ""); // Odstranění všech mezer
 
-    console.log(buffer);
-
     const isOutputExpRoot = output.innerHTML.includes("^2") || output.innerHTML.includes("sqrt");
     const isOutputEmpty = output.innerHTML === "";
 
     if (handleDivisionByZero(output, suboutputLastElement)) return; // Pokud se dělí nulou, aktivuje se tato funkce a equalsClick skončí
 
     if (bufferLastElement === "=") {
-        if (flag > 0) {
-            flag = 0;
-            return;
-        }
-        else if (isOutputExpRoot) { // Když dostanu výsledek a ten umocním nebo odmocním a dám "=", tak se provede výpočet
+        if (isOutputExpRoot) { // Když dostanu výsledek a ten umocním nebo odmocním a dám "=", tak se provede výpočet
             buffer.length = 0;
             buffer.push(cleanedOutput, button.innerHTML); 
         }
+        else if (!isOutputEmpty && typeof buffer[0] === "string") {
+            cleanedOutput = !cleanedOutput.includes(".") ? parseInt(cleanedOutput) : parseFloat(cleanedOutput);
+            buffer = [cleanedOutput, "="];
+        }
         else if (!isOutputEmpty) { // Když zmáčknu "=" hned po tom, co jsem ho dal
-            if (buffer[0][0] == output.innerHTML[0]) return; // Oštření proti opakovaným "=", když je jen x^2 v bufferu
-            if (buffer[0] == output.innerHTML) return; // Když zmáčknu "=" hned po tom, co jsem ho zmáčkl 
+            if (buffer[0] == output.innerHTML) return; // Když zadám číslo a zmáčknu "=" a pak mačkám dál "=", tak ignoruje
 
             const [x, y] = buffer.slice(-3, -1); // Získám dva poslední prvky z bufferu bez "="
             cleanedOutput = !cleanedOutput.includes(".") ? parseInt(cleanedOutput) : parseFloat(cleanedOutput);
-            buffer = [cleanedOutput, x, y];
+            buffer = [cleanedOutput, x, y, "="];
         }
     }
     else if (isOutputExpRoot) {
@@ -177,7 +176,7 @@ function equalsClick(event) {
         cleanedOutput = !cleanedOutput.includes(".") ? parseInt(cleanedOutput) : parseFloat(cleanedOutput);
         buffer.push(cleanedOutput, button.innerHTML);
     }
-
+    console.log(buffer);
     getResult();
     checkOutputLength();
 }
@@ -212,19 +211,17 @@ function specOperatorClick(event) {
     // Kontrola, aby nešlo zadávat tyto operátory u extrémně velkých čísel, protože se to nevejde na displej a už nechci znovu zmenšovat font
     if (output.innerHTML.length >= OUTPUT_MAX_LENGTH - 2) return;
 
-    console.log(1);
     // flag zde inkrementuji, abych mohl ve funkci numClick poznat, jestli byl stisknut před tím spec. oper. nebo ne
     // u mocnin zaručuji podmínkami, že nepůjdou zmáčknout, když je prázdný displej
     if (["x²", "√"].includes(button.innerHTML) && !isOutputEmpty && !hasOutputExpRoot) {
         output.innerHTML = SPECIAL_OPERATORS[button.innerHTML](output.innerHTML);
-        flag++;
     }
     else if (["e", "π"].includes(button.innerHTML) && !hasOutputExpRoot) {
         if (suboutput.innerHTML.includes("=")) suboutput.innerHTML = "";
         output.innerHTML = SPECIAL_OPERATORS[button.innerHTML];
-        flag++;
     }
 
+    flag++;
     checkOutputLength();
 }
 
