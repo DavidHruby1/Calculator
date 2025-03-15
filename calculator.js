@@ -32,7 +32,7 @@ function numClick(event) {
 
     if (output.innerHTML.length >= OUTPUT_MAX_LENGTH) return;
 
-    // Kontrola flagu - pokud je zobrazen výsledek a začnu psát čísla, tak ho přepíšou
+    // Flag check - If the result is being shown and I start typing, the numbers will overwrite the result
     if (flag > 0) {
         if (isDecimal) {
             if (!isSuboutputEmpty) resetCalculator();
@@ -93,11 +93,11 @@ function addNumberToOutput(pressedButton, outputEmpty = false) {
 // + - * /
 function basicOperatorClick(event) {
     const button = event.currentTarget;
-    const bufferLastElement = buffer.length > 0 && buffer[buffer.length - 1]; // Pokud buffer není prázdný, tak mu přiřaď hodnotu, jinak false
+    const bufferLastElement = buffer.length > 0 && buffer[buffer.length - 1]; // If the buffer is not empty, assign the last number or false
     let cleanedOutput = output.innerHTML.replace(/\s+/g, "");
-    flag = 0; // Flag nastavuji na 0, aby se po zmáčknutí "=" a následného použití operátoru nevymazaly všechny buffery
+    flag = 0; // Reseting the flag
 
-    const isOperatorLastElement = bufferLastElement && bufferLastElement.includes("="); // Když proměnná bLE je true, zkontroluj druhou podmínku
+    const isOperatorLastElement = bufferLastElement && bufferLastElement.includes("=");
     const isOutputEmpty = output.innerHTML === "";
     const isOutputDecimal = output.innerHTML.includes(".");
     const isOutputExpRoot = output.innerHTML.includes("sqrt") || output.innerHTML.includes("^2");
@@ -142,15 +142,15 @@ function equalsClick(event) {
     const button = event.currentTarget;
     const bufferLastElement = buffer[buffer.length - 1];
     const suboutputLastElement = suboutput.innerHTML[suboutput.innerHTML.length - 1];
-    let cleanedOutput = output.innerHTML.replace(/\s+/g, ""); // Odstranění všech mezer
+    let cleanedOutput = output.innerHTML.replace(/\s+/g, ""); // Removes every whitespace
 
     const isOutputExpRoot = output.innerHTML.includes("^2") || output.innerHTML.includes("sqrt");
     const isOutputEmpty = output.innerHTML === "";
 
-    if (handleDivisionByZero(output, suboutputLastElement)) return; // Pokud se dělí nulou, aktivuje se tato funkce a equalsClick skončí
+    if (handleDivisionByZero(output, suboutputLastElement)) return; // If you divide by 0 this function activates and returns
 
     if (bufferLastElement === "=") {
-        if (isOutputExpRoot) { // Když dostanu výsledek a ten umocním nebo odmocním a dám "=", tak se provede výpočet
+        if (isOutputExpRoot) {
             buffer.length = 0;
             buffer.push(cleanedOutput, button.innerHTML); 
         }
@@ -158,10 +158,10 @@ function equalsClick(event) {
             cleanedOutput = !cleanedOutput.includes(".") ? parseInt(cleanedOutput) : parseFloat(cleanedOutput);
             buffer = [cleanedOutput, "="];
         }
-        else if (!isOutputEmpty) { // Když zmáčknu "=" hned po tom, co jsem ho dal
-            if (buffer[0] == output.innerHTML) return; // Když zadám číslo a zmáčknu "=" a pak mačkám dál "=", tak ignoruje
+        else if (!isOutputEmpty) { // If I click on "=" right after I clicked on it ->
+            if (buffer[0] == output.innerHTML) return; // If I press one number and repeatedly click on "=", it ignores
 
-            const [x, y] = buffer.slice(-3, -1); // Získám dva poslední prvky z bufferu bez "="
+            const [x, y] = buffer.slice(-3, -1); // Getting 2 last numbers without "="
             cleanedOutput = !cleanedOutput.includes(".") ? parseInt(cleanedOutput) : parseFloat(cleanedOutput);
             buffer = [cleanedOutput, x, y, "="];
         }
@@ -170,7 +170,7 @@ function equalsClick(event) {
         buffer.push(cleanedOutput, button.innerHTML);
     }
     else if (isOutputEmpty) {
-        switchOperator(button, bufferLastElement); // Znamená to, že poslední je operátor, který bude vyhozen a nahrazen "="
+        switchOperator(button, bufferLastElement);
     }
     else if (!isOutputEmpty) {
         cleanedOutput = !cleanedOutput.includes(".") ? parseInt(cleanedOutput) : parseFloat(cleanedOutput);
@@ -183,7 +183,7 @@ function equalsClick(event) {
 
 function getResult() {
     let calculation = math.evaluate(buffer.join("").slice(0, -1)); 
-    let result = numSpaceResult(calculation); // Naformátování výsledku
+    let result = numSpaceResult(calculation); // Formatting the result
     output.innerHTML = result; 
     suboutput.innerHTML = buffer.join("");
     flag++;
@@ -192,7 +192,7 @@ function getResult() {
 
 function handleDivisionByZero(output, suboutputLastElement) {
     if (output.innerHTML === "0" && suboutputLastElement === "/") {
-        output.innerHTML = "Nelze dělit nulou!";
+        output.innerHTML = "Can not divide by zero!";
         suboutput.innerHTML = "";
         buffer.length = 0;
         flag++;
@@ -201,18 +201,17 @@ function handleDivisionByZero(output, suboutputLastElement) {
     return false;
 }
 
-// Funkce na mocniny, odmocniny a konstanty
+// Functions for square root, squaring and constants
 function specOperatorClick(event) {
     const button = event.currentTarget;
 
     const isOutputEmpty = output.innerHTML === "";
     const hasOutputExpRoot = output.innerHTML.includes("^2") || output.innerHTML.includes("sqrt");
 
-    // Kontrola, aby nešlo zadávat tyto operátory u extrémně velkých čísel, protože se to nevejde na displej a už nechci znovu zmenšovat font
+    // Maximum length check - It prevents from pressing "√" or "^2" when the number on the display is too long
     if (output.innerHTML.length >= OUTPUT_MAX_LENGTH - 2) return;
 
-    // flag zde inkrementuji, abych mohl ve funkci numClick poznat, jestli byl stisknut před tím spec. oper. nebo ne
-    // u mocnin zaručuji podmínkami, že nepůjdou zmáčknout, když je prázdný displej
+    // Making sure to forbid using "√" or "^2" when the display is empty
     if (["x²", "√"].includes(button.innerHTML) && !isOutputEmpty && !hasOutputExpRoot) {
         output.innerHTML = SPECIAL_OPERATORS[button.innerHTML](output.innerHTML);
     }
@@ -227,7 +226,7 @@ function specOperatorClick(event) {
 
 function logicClick(event) {
     const button = event.currentTarget;
-    const cleanedOutput = output.innerHTML.replace(/\s+/g, ""); // Odstranění všech mezer
+    const cleanedOutput = output.innerHTML.replace(/\s+/g, "");
 
     const isOutputZero = output.innerHTML === "0";
     const isOutputEmpty = output.innerHTML === "";
@@ -243,7 +242,7 @@ function logicClick(event) {
         else {
             output.innerHTML = output.innerHTML.slice(0, -1);
         }
-        numSpacing(output.innerHTML); // Opětovná kontrola mezer při mazání
+        numSpacing(output.innerHTML); // Checking whitespaces when deleting numbers
     }
     else if (button.innerHTML === "C") {
         resetCalculator();
@@ -251,7 +250,7 @@ function logicClick(event) {
     }
     else if (button.innerHTML === "MS" && !isOutputEmpty && memory != cleanedOutput) {
         memory = isOutputDecimal ? parseFloat(cleanedOutput) : parseInt(cleanedOutput);
-        flag++; // flag přidávám, protože když po uložení zmáčknu číslo -> output se vyresetuje
+        flag++; // Incrementing flag so if I save number to the memory it resets the display after pressing a number
     } 
     else if (button.innerHTML === "MC" && memory !== 0) {
         memory = 0;
@@ -273,10 +272,10 @@ function checkOutputLength() {
 
     const hasOutputExpRoot = output.innerHTML.includes("sqrt") || output.innerHTML.includes("^2");
 
-    if (output.innerHTML.length < 1) resetFontSize(); // Zajišťuje, že font je vždy výchozí
+    if (output.innerHTML.length < 1) resetFontSize(); // Make sure that font is always set to default
 
     if (textWidth > maxwidth) {
-        if (hasOutputExpRoot) { // Pokud přidám spec. oper., tak se font zmenší více, aby se to vešlo na displej
+        if (hasOutputExpRoot) { // Making font even samller then normal after using special operators to make sure it fits
             currentFontSize -= 8;
             output.style.fontSize = currentFontSize;
         } else {
@@ -286,51 +285,50 @@ function checkOutputLength() {
     }
 }
 
-// Pomocná funkce, abych nemusel pořád duplikovat kód
 function resetFontSize() {
     currentFontSize = 36;
     output.style.fontSize = currentFontSize;
 }
 
-// Funkce na tvorbu mezer po třech číslech
+// Function for creating a whitespace after every third number
 function numSpacing(string) {
-    let counter = 0; // Pomocná proměnná, díky které poznám, kdy přidat mezeru
-    const cleanedString = string.replace(/\s+/g, ""); // Odstranění všech mezer   
+    let counter = 0;
+    const cleanedString = string.replace(/\s+/g, ""); 
     
     const formattedString = cleanedString
         .split("")
         .reverse()
-        .map(digit => (counter === 3 ? (counter = 1, digit + " ") : (counter++, digit))) // když counter je 3, tak ho nastav na 1 a přidej mezeru, jinak zvyš counter o 1 
+        .map(digit => (counter === 3 ? (counter = 1, digit + " ") : (counter++, digit))) // If the counter is 3, set it to 1 and add a whitespace, otherwise icnrement the counhter by 1 
         .reverse()
         .join("");
     
     output.innerHTML = formattedString;
 }
 
-// Funkce na formátování výsledku -> Přidání mezer za každou třetí číslici
+// Function for formatting the result
 function numSpaceResult(result) {
     let counter = 0;
     const stringResult = String(result);
 
-    // Pokud výsledek obsahuje des. tečku, tak rozdělí string na dvě části a na celou část použije spacing
+    // If the result is decimal it splits the result and the part that is not decimal will have whitespaces
     if (stringResult.includes(".")) {
         const [integerPart, decimalPart] = stringResult.split(".");
 
         let formattedString = integerPart
             .split("")
             .reverse()
-            .map(digit => (counter === 3 ? (counter = 1, digit + " ") : (counter++, digit))) // když counter je 3, tak ho nastav na 1 a přidej mezeru, jinak zvyš counter o 1 
+            .map(digit => (counter === 3 ? (counter = 1, digit + " ") : (counter++, digit)))
             .reverse()
             .join("");
 
-        formattedString += "." + decimalPart; // Nakonec připojí k upravené celé části zbytek
+        formattedString += "." + decimalPart; 
         return formattedString;
     }
 
     const formattedString = stringResult
         .split("")
         .reverse()
-        .map(digit => (counter === 3 ? (counter = 1, digit + " ") : (counter++, digit))) // když counter je 3, tak ho nastav na 1 a přidej mezeru, jinak zvyš counter o 1 
+        .map(digit => (counter === 3 ? (counter = 1, digit + " ") : (counter++, digit)))
         .reverse()
         .join("");
 
@@ -338,7 +336,7 @@ function numSpaceResult(result) {
 }
 
 //
-// Inits & Event listeners
+// Events 
 //
 numberButtons.forEach(button => {
     button.addEventListener("click", numClick);

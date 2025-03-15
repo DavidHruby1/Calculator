@@ -59,7 +59,7 @@ body {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    padding-right: 8px; /* možná předělat na relativní -> % */
+    padding-right: 8px;
     font-size: var(--display_font_size);
     color: var(--display_font_color);
 }
@@ -71,7 +71,7 @@ body {
     display: flex;
     height: 28px;
     justify-content: flex-end;
-    padding-right: 8px; /* též možná předělat na relativní */
+    padding-right: 8px;
     color: var(--subdisplay_font_color);
     font-size: var(--subdisplay_font_size);
     white-space: nowrap;
