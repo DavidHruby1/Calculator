@@ -31,8 +31,7 @@ This web application provides users with a simple and intuitive tool for perform
 
 1.  **Clone the Repository:**
     ```bash
-    git clone [https://github.com/your-username/Calculator.git](https://www.google.com/search?q=https://github.com/your-username/Calculator.git)
-    ```
+    git clone https://github.com/your-username/Calculator.git
 2.  **Open in Browser:**
     -   Navigate to the cloned directory and open `index.html` in your preferred web browser.
 
